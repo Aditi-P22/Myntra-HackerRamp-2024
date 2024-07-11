@@ -12,6 +12,7 @@ import ThreadsScreen from "./screens/ThreadsScreen";
 import { Ionicons } from "@expo/vector-icons";
 import ActivityScreen from "./screens/ActivityScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import ClothingScreen from "./screens/ClothingScreen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -37,7 +38,7 @@ const StackNavigator = () => {
 
         <Tab.Screen
           name="Thread"
-          component={ThreadsScreen}
+          component={ClothingScreen}
           options={{
             tabBarLabel: "Create",
             tabBarLabelStyle: { color: "black" },

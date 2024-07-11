@@ -40,6 +40,10 @@ app.listen(port, host, () => {
 
 const User = require("./models/user");
 const Post = require("./models/post");
+const Top = require("./models/top"); // Import Top model
+const Bottom = require("./models/bottom");
+const Footwear = require("./models/footwear");
+const Accessory = require("./models/accessory");
 
 const sendVerificationEmail = async (email, verificationToken) => {
   const transporter = nodemailer.createTransport({
@@ -281,4 +285,67 @@ app.get("/profile/:userId", async (req, res) => {
     console.error("Error getting profile", error);
     res.status(500).json({ message: "Error while getting the profile" });
   }
+});
+
+//Endpoint for displaying products
+app.use((req, res, next) => {
+  req.topModel = Top;
+  req.footwearModel = Footwear;
+  req.bottomModel = Bottom;
+  req.accessoryModel = Accessory;
+  next();
+});
+
+// Endpoint to handle GET requests to '/tops'
+app.get("/tops", async (req, res) => {
+  try {
+    const tops = await req.topModel.find();
+    res.status(200).json(tops);
+  } catch (error) {
+    console.error("Error fetching tops:", error);
+    res.status(500).json({ message: "An error occurred while fetching tops" });
+  }
+});
+
+// Endpoint for footwear (replace with your actual logic)
+app.get("/footwear", async (req, res) => {
+  try {
+    const footwear = await req.footwearModel.find();
+    res.status(200).json(footwear);
+  } catch (error) {
+    console.error("Error fetching footwear:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching footwear" });
+  }
+});
+
+// Endpoint for bottoms (replace with your actual logic)
+app.get("/bottoms", async (req, res) => {
+  try {
+    const bottoms = await req.bottomModel.find();
+    res.status(200).json(bottoms);
+  } catch (error) {
+    console.error("Error fetching bottoms:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching bottoms" });
+  }
+});
+
+// Endpoint for accessories (replace with your actual logic)
+app.get("/accessories", async (req, res) => {
+  try {
+    const accessories = await req.accessoryModel.find();
+    res.status(200).json(accessories);
+  } catch (error) {
+    console.error("Error fetching accessories:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching accessories" });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
