@@ -180,28 +180,29 @@ app.post("/users/unfollow", async (req, res) => {
   }
 });
 
-app.post("/create-post", async (req, res) => {
-  try {
-    const { content, userId } = req.body;
+// app.post("/create-post", async (req, res) => {
+//   try {
+//     const { content, userId } = req.body;
 
-    const newPostData = {
-      user: userId,
-    };
+//     const newPostData = {
+//       user: userId,
+//     };
 
-    if (content) {
-      newPostData.content = content;
-    }
+//     if (content) {
+//       newPostData.content = content;
+//     }
 
-    const newPost = new Post(newPostData);
-    await newPost.save();
+//     const newPost = new Post(newPostData);
+//     await newPost.save();
 
-    res.status(200).json({ message: "Post saved successfully" });
-  } catch (error) {
-    console.error("Post creation failed", error);
-    res.status(500).json({ message: "Post creation failed" });
-  }
-});
+//     res.status(200).json({ message: "Post saved successfully" });
+//   } catch (error) {
+//     console.error("Post creation failed", error);
+//     res.status(500).json({ message: "Post creation failed" });
+//   }
+// });
 
+//endpoint for liking a particular post
 app.put("/posts/:postId/:userId/like", async (req, res) => {
   const postId = req.params.postId;
   const userId = req.params.userId;
@@ -229,6 +230,7 @@ app.put("/posts/:postId/:userId/like", async (req, res) => {
   }
 });
 
+//endpoint to unlike a post
 app.put("/posts/:postId/:userId/unlike", async (req, res) => {
   const postId = req.params.postId;
   const userId = req.params.userId;
@@ -256,20 +258,20 @@ app.put("/posts/:postId/:userId/unlike", async (req, res) => {
   }
 });
 
-app.get("/get-posts", async (req, res) => {
-  try {
-    const posts = await Post.find()
-      .populate("user", "name")
-      .sort({ createdAt: -1 });
+// app.get("/get-posts", async (req, res) => {
+//   try {
+//     const posts = await Post.find()
+//       .populate("user", "name")
+//       .sort({ createdAt: -1 });
 
-    res.status(200).json(posts);
-  } catch (error) {
-    console.error("Error getting posts", error);
-    res
-      .status(500)
-      .json({ message: "An error occurred while getting the posts" });
-  }
-});
+//     res.status(200).json(posts);
+//   } catch (error) {
+//     console.error("Error getting posts", error);
+//     res
+//       .status(500)
+//       .json({ message: "An error occurred while getting the posts" });
+//   }
+// });
 
 app.get("/profile/:userId", async (req, res) => {
   try {
@@ -348,4 +350,34 @@ app.get("/accessories", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+
+//endpoint for creating a post
+app.post("/create-post", async (req, res) => {
+  try {
+    const { userId, products, outfitName, tags, description, content } =
+      req.body;
+    const post = new Post({
+      user: userId,
+      outfitName,
+      description,
+      images: products.map((product) => product.image),
+      tags,
+      content,
+    });
+    await post.save();
+    res.status(201).send(post);
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+//endpoint for displaying post
+app.get("/posts", async (req, res) => {
+  try {
+    const posts = await Post.find().populate("user", "name profilePicture");
+    res.status(200).send(posts);
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
 });

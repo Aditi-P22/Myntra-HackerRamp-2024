@@ -1,9 +1,27 @@
 const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema({
-  content: { type: String },
+  outfitName: { type: String, required: true },
+  description: { type: String, required: true },
+  images: [
+    {
+      type: String, // URL to the image
+      required: true,
+    },
+  ],
+  tags: [
+    {
+      type: String,
+    },
+  ],
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  saves: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

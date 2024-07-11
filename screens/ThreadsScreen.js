@@ -14,63 +14,51 @@ import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 
 const ThreadsScreen = ({ route }) => {
-  const { userId, setUserId } = useContext(UserType);
+  const { userId } = useContext(UserType);
   const { selectedProducts } = route.params;
   const [content, setContent] = useState("");
+  const [outfitName, setOutfitName] = useState("");
+  const [tags, setTags] = useState("");
+  const [description, setDescription] = useState("");
 
   const handlePostSubmit = () => {
     const postData = {
       userId,
       products: selectedProducts,
+      outfitName,
+      tags: tags.split(",").map((tag) => tag.trim()), // assuming tags are comma-separated
+      description,
+      content,
     };
-
-    if (content) {
-      postData.content = content;
-    }
 
     axios
       .post("http://192.168.29.11:3000/create-post", postData)
       .then((response) => {
         setContent("");
+        setOutfitName("");
+        setTags("");
+        setDescription("");
         // Add any additional logic if needed
       })
       .catch((error) => {
-        console.log("error creating post", error);
+        console.log("Error creating post", error);
       });
   };
 
   return (
-    <SafeAreaView style={{ padding: 10 }}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 10,
-          padding: 10,
-        }}
-      >
-        <Image
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-            resizeMode: "contain",
-          }}
-          source={{
-            uri: "https://cdn-icons-png.flaticon.com/128/149/149071.png",
-          }}
-        />
-        <Text>Sujan_Music</Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <View style={styles.header}>
+          <Image
+            style={styles.avatar}
+            source={{
+              uri: "https://cdn-icons-png.flaticon.com/128/149/149071.png",
+            }}
+          />
+          <Text style={styles.username}>Sujan_Music</Text>
+        </View>
 
-      <ScrollView style={{ marginVertical: 10 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "space-around",
-          }}
-        >
+        <View style={styles.productContainer}>
           {selectedProducts.map((product, index) => (
             <View key={index} style={styles.productCard}>
               <Image style={styles.image} source={{ uri: product.image }} />
@@ -80,18 +68,39 @@ const ThreadsScreen = ({ route }) => {
             </View>
           ))}
         </View>
+
+        <TextInput
+          value={outfitName}
+          onChangeText={(text) => setOutfitName(text)}
+          placeholder="Outfit Name"
+          placeholderTextColor={"black"}
+          style={styles.textInput}
+          multiline={true}
+          numberOfLines={3} // Adjust as needed
+        />
+
+        <TextInput
+          value={tags}
+          onChangeText={(text) => setTags(text)}
+          placeholder="Tags (comma separated)"
+          placeholderTextColor={"black"}
+          style={styles.textInput}
+          multiline={true}
+          numberOfLines={3} // Adjust as needed
+        />
+
+        <TextInput
+          value={description}
+          onChangeText={(text) => setDescription(text)}
+          placeholder="Description"
+          placeholderTextColor={"black"}
+          style={styles.textInput}
+          multiline={true}
+          numberOfLines={5} // Adjust as needed
+        />
+
+        <Button onPress={handlePostSubmit} title="Share Post" />
       </ScrollView>
-
-      <TextInput
-        value={content}
-        onChangeText={(text) => setContent(text)}
-        placeholderTextColor={"black"}
-        placeholder="Type your message..."
-        multiline
-        style={styles.textInput}
-      />
-
-      <Button onPress={handlePostSubmit} title="Share Post" />
     </SafeAreaView>
   );
 };
@@ -99,6 +108,35 @@ const ThreadsScreen = ({ route }) => {
 export default ThreadsScreen;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    marginBottom: 10,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    resizeMode: "contain",
+  },
+  username: {
+    marginLeft: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+  },
+  productContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+  },
   productCard: {
     width: "45%",
     backgroundColor: "#f8f8f8",
@@ -131,5 +169,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 10,
     borderRadius: 5,
+    minHeight: 50, // Ensure TextInput has enough height to display multiline content
   },
 });
