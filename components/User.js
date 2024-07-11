@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
-import React, { useContext, useState,useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { UserType } from "../UserContext";
 
 const User = ({ item }) => {
   const { userId, setUserId } = useContext(UserType);
-  console.log("sds",item);
+  console.log("sds", item);
   const [requestSent, setRequestSent] = useState(false);
   const sendFollow = async (currentUserId, selectedUserId) => {
     try {
-      const response = await fetch("http://localhost:3000/follow", {
+      const response = await fetch("http://192.168.29.11:3000/follow", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,7 +26,7 @@ const User = ({ item }) => {
 
   const handleUnfollow = async (targetId) => {
     try {
-      const response = await fetch("http://localhost:3000/users/unfollow", {
+      const response = await fetch("http://192.168.29.11:3000/users/unfollow", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,9 +37,9 @@ const User = ({ item }) => {
         }),
       });
 
-      if(response.ok){
-          setRequestSent(false);
-          console.log("unfollowed successfully")
+      if (response.ok) {
+        setRequestSent(false);
+        console.log("unfollowed successfully");
       }
     } catch (error) {
       console.log("Error", error);

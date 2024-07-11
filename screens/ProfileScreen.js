@@ -7,13 +7,13 @@ import { useNavigation } from "@react-navigation/native";
 
 const ProfileScreen = () => {
   const [user, setUser] = useState("");
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const { userId, setUserId } = useContext(UserType);
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/profile/${userId}`
+          `http://192.168.29.11:3000/profile/${userId}`
         );
         const { user } = response.data;
         setUser(user);
@@ -26,13 +26,13 @@ const ProfileScreen = () => {
   });
 
   const logout = () => {
-      clearAuthToken();
-  }
+    clearAuthToken();
+  };
   const clearAuthToken = async () => {
-      await AsyncStorage.removeItem("authToken");
-      console.log("Cleared auth token");
-      navigation.replace("Login")
-  }
+    await AsyncStorage.removeItem("authToken");
+    console.log("Cleared auth token");
+    navigation.replace("Login");
+  };
 
   return (
     <View style={{ marginTop: 55, padding: 15 }}>
@@ -86,7 +86,14 @@ const ProfileScreen = () => {
         <Text style={{ color: "gray", fontSize: 15, marginTop: 10 }}>
           {user?.followers?.length} followers
         </Text>
-        <View style={{flexDirection:"row",alignItems:"center",gap:10,marginTop:20}}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 10,
+            marginTop: 20,
+          }}
+        >
           <Pressable
             style={{
               flex: 1,
