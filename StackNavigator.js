@@ -104,6 +104,11 @@ const StackNavigator = () => {
           component={BottomTabs}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="ThreadsScreen"
+          component={ThreadsScreen}
+          options={{ headerShown: true, title: "Name Your Curation" }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
