@@ -60,11 +60,11 @@ const LoginScreen = () => {
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
     >
-      <View style={{ marginTop: 50 }}>
+      <View style={{ marginTop: 100 }}>
         <Image
           style={{ width: 150, height: 100, resizeMode: "contain" }}
           source={{
-            uri: "https://freelogopng.com/images/all_img/1688663386threads-logo-transparent.png",
+            uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJaZFxwPVRLp4lnm6GtAt154e86wb-5A9QSA&s",
           }}
         />
       </View>
@@ -150,7 +150,7 @@ const LoginScreen = () => {
               marginTop: 12,
             }}
           >
-            <Text>Keep me logged in</Text>
+            <Text style={{ color: "#333333" }}>Keep me logged in</Text>
             <Text style={{ fontWeight: "500", color: "#007FFF" }}>
               Forgot Password
             </Text>
@@ -163,7 +163,7 @@ const LoginScreen = () => {
           onPress={handleLogin}
           style={{
             width: 200,
-            backgroundColor: "black",
+            backgroundColor: "#ff3e6c",
             padding: 15,
             marginTop: 40,
             marginLeft: "auto",
@@ -188,7 +188,8 @@ const LoginScreen = () => {
           style={{ marginTop: 10 }}
         >
           <Text style={{ textAlign: "center", fontSize: 16 }}>
-            Don't have an account? Sign up
+            <Text style={{ color: "#333333" }}>Don't have an account? </Text>
+            <Text style={{ color: "#ff3e6c" }}>Sign up</Text>
           </Text>
         </Pressable>
       </KeyboardAvoidingView>
