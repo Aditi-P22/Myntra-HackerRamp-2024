@@ -381,3 +381,14 @@ app.get("/posts", async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 });
+
+//endpoint for user's post in profile
+app.get("/posts/user/:userId", async (req, res) => {
+  try {
+    const posts = await Post.find({ user: req.params.userId }); // Find posts where user matches userId
+    res.json(posts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
