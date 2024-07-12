@@ -29,7 +29,7 @@ const StackNavigator = () => {
             headerShown: false,
             tabBarIcon: ({ focused }) =>
               focused ? (
-                <Entypo name="home" size={24} color="black" />
+                <Entypo name="home" size={24} color="#ff3e6c" />
               ) : (
                 <AntDesign name="home" size={24} color="black" />
               ),
@@ -45,7 +45,7 @@ const StackNavigator = () => {
             headerShown: false,
             tabBarIcon: ({ focused }) =>
               focused ? (
-                <Ionicons name="create" size={24} color="black" />
+                <Ionicons name="create" size={24} color="#ff3e6c" />
               ) : (
                 <Ionicons name="create-outline" size={24} color="black" />
               ),
@@ -61,7 +61,7 @@ const StackNavigator = () => {
             headerShown: false,
             tabBarIcon: ({ focused }) =>
               focused ? (
-                <AntDesign name="heart" size={24} color="black" />
+                <AntDesign name="heart" size={24} color="#ff3e6c" />
               ) : (
                 <AntDesign name="hearto" size={24} color="black" />
               ),
@@ -77,7 +77,7 @@ const StackNavigator = () => {
             headerShown: false,
             tabBarIcon: ({ focused }) =>
               focused ? (
-                <Ionicons name="person" size={24} color="black" />
+                <Ionicons name="person" size={24} color="#ff3e6c" />
               ) : (
                 <Ionicons name="person-outline" size={24} color="black" />
               ),

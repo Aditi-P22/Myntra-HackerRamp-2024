@@ -32,7 +32,7 @@ const ThreadsScreen = ({ route }) => {
     };
 
     axios
-      .post("http://192.168.29.11:3000/create-post", postData)
+      .post("http://192.168.0.155:3000/create-post", postData)
       .then((response) => {
         setContent("");
         setOutfitName("");
@@ -62,9 +62,9 @@ const ThreadsScreen = ({ route }) => {
           {selectedProducts.map((product, index) => (
             <View key={index} style={styles.productCard}>
               <Image style={styles.image} source={{ uri: product.image }} />
-              <Text style={styles.price}>{`₹${product.price}`}</Text>
               <Text style={styles.name}>{product.name}</Text>
               <Text style={styles.brand}>{product.brand}</Text>
+              <Text style={styles.price}>{`₹${product.price}`}</Text>
             </View>
           ))}
         </View>
@@ -99,7 +99,11 @@ const ThreadsScreen = ({ route }) => {
           numberOfLines={5} // Adjust as needed
         />
 
-        <Button onPress={handlePostSubmit} title="Share Post" />
+        <Button
+          onPress={handlePostSubmit}
+          title="Share Post"
+          color={"#ff3e6c"}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -143,6 +147,11 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 10,
     borderRadius: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   image: {
     width: "100%",
@@ -150,18 +159,18 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   price: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 5,
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#ff3e6c",
   },
   name: {
     fontSize: 16,
-    marginTop: 5,
+    marginTop: 3,
+    fontWeight: "bold",
   },
   brand: {
-    fontSize: 14,
+    fontSize: 12,
     color: "gray",
-    marginTop: 5,
   },
   textInput: {
     borderColor: "gray",

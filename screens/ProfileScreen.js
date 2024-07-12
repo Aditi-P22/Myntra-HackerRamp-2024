@@ -13,7 +13,7 @@ const ProfileScreen = () => {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.29.11:3000/profile/${userId}`
+          `http://192.168.0.155:3000/profile/${userId}`
         );
         const { user } = response.data;
         setUser(user);
@@ -95,7 +95,7 @@ const ProfileScreen = () => {
           }}
         >
           <Pressable
-            style={{
+            style={({ pressed }) => ({
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
@@ -103,14 +103,19 @@ const ProfileScreen = () => {
               borderColor: "#D0D0D0",
               borderWidth: 1,
               borderRadius: 5,
-            }}
+              backgroundColor: pressed ? "#ff3e6c" : "transparent",
+            })}
           >
-            <Text>Edit Profile</Text>
+            {({ pressed }) => (
+              <Text style={{ color: pressed ? "#fff" : "#000" }}>
+                Edit Profile
+              </Text>
+            )}
           </Pressable>
 
           <Pressable
             onPress={logout}
-            style={{
+            style={({ pressed }) => ({
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
@@ -118,9 +123,12 @@ const ProfileScreen = () => {
               borderColor: "#D0D0D0",
               borderWidth: 1,
               borderRadius: 5,
-            }}
+              backgroundColor: pressed ? "#ff3e6c" : "transparent",
+            })}
           >
-            <Text>Logout</Text>
+            {({ pressed }) => (
+              <Text style={{ color: pressed ? "#fff" : "#000" }}>Logout</Text>
+            )}
           </Pressable>
         </View>
       </View>

@@ -28,7 +28,7 @@ const ActivityScreen = () => {
       setUserId(userId);
 
       axios
-        .get(`http://localhost:3000/user/${userId}`)
+        .get(`http://192.168.0.155:3000/user/${userId}`)
         .then((response) => {
           setUsers(response.data);
         })
@@ -65,7 +65,9 @@ const ActivityScreen = () => {
                 borderRadius: 6,
                 borderWidth: 0.7,
               },
-              selectedButton === "people" ? { backgroundColor: "black" } : null,
+              selectedButton === "people"
+                ? { backgroundColor: "#ff3e6c" }
+                : null,
             ]}
           >
             <Text
@@ -73,7 +75,7 @@ const ActivityScreen = () => {
                 { textAlign: "center", fontWeight: "bold" },
                 selectedButton === "people"
                   ? { color: "white" }
-                  : { color: "black" },
+                  : { color: "#ff3e6c" },
               ]}
             >
               People
@@ -92,7 +94,7 @@ const ActivityScreen = () => {
                 borderRadius: 6,
                 borderWidth: 0.7,
               },
-              selectedButton === "all" ? { backgroundColor: "black" } : null,
+              selectedButton === "all" ? { backgroundColor: "#ff3e6c" } : null,
             ]}
           >
             <Text
@@ -100,7 +102,7 @@ const ActivityScreen = () => {
                 { textAlign: "center", fontWeight: "bold" },
                 selectedButton === "all"
                   ? { color: "white" }
-                  : { color: "black" },
+                  : { color: "#ff3e6c" },
               ]}
             >
               All
@@ -120,7 +122,7 @@ const ActivityScreen = () => {
                 borderWidth: 0.7,
               },
               selectedButton === "requests"
-                ? { backgroundColor: "black" }
+                ? { backgroundColor: "#ff3e6c" }
                 : null,
             ]}
           >
@@ -129,7 +131,7 @@ const ActivityScreen = () => {
                 { textAlign: "center", fontWeight: "bold" },
                 selectedButton === "requests"
                   ? { color: "white" }
-                  : { color: "black" },
+                  : { color: "#ff3e6c" },
               ]}
             >
               Requests

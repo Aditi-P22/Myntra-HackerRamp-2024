@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,10 +6,16 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  Animated,
+  Easing,
 } from "react-native";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+
+const ChevronUpIcon = () => (
+  <Ionicons name="chevron-up" size={24} color="black" />
+);
 
 const ClothingScreen = () => {
   const [category, setCategory] = useState("tops");
@@ -17,6 +23,7 @@ const ClothingScreen = () => {
   const [selectedBottom, setSelectedBottom] = useState(null);
   const [selectedFootwear, setSelectedFootwear] = useState(null);
   const [selectedAccessory, setSelectedAccessory] = useState(null);
+  const [expanded, setExpanded] = useState(false); // State for expanded/collapsed
   const navigation = useNavigation();
 
   const toggleSelectProduct = (product, type) => {
@@ -45,6 +52,17 @@ const ClothingScreen = () => {
     if (selectedFootwear) selectedProducts.push(selectedFootwear);
     if (selectedAccessory) selectedProducts.push(selectedAccessory);
     return selectedProducts;
+  };
+
+  const selectedProductsHeight = useRef(new Animated.Value(0)).current;
+  const expandSelectedProducts = () => {
+    Animated.timing(selectedProductsHeight, {
+      toValue: expanded ? 0 : 100, // Adjust height as needed
+      duration: 300,
+      easing: Easing.linear,
+      useNativeDriver: false,
+    }).start();
+    setExpanded(!expanded);
   };
 
   return (
@@ -120,27 +138,33 @@ const ClothingScreen = () => {
         )}
       </ScrollView>
 
-      <View style={styles.selectedProductsContainer}>
+      <TouchableOpacity
+        style={styles.selectedProductsContainer}
+        onPress={expandSelectedProducts}
+      >
         <Text style={styles.selectedProductsText}>
           {getSelectedProducts().length} Products • ₹
           {getSelectedProducts()
             .reduce((total, product) => total + product.price, 0)
             .toFixed(2)}
+          <ChevronUpIcon />
         </Text>
-        <ScrollView horizontal>
-          {getSelectedProducts().map((product, index) => (
-            <View key={index} style={styles.selectedProductCard}>
-              <Image style={styles.image} source={{ uri: product.image }} />
-              <TouchableOpacity
-                style={styles.minusIcon}
-                onPress={() => toggleSelectProduct(null, product.type)}
-              >
-                <Ionicons name="remove-circle" size={24} color="black" />
-              </TouchableOpacity>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
+        <Animated.View style={{ height: selectedProductsHeight }}>
+          <ScrollView horizontal>
+            {getSelectedProducts().map((product, index) => (
+              <View key={index} style={styles.selectedProductCard}>
+                <Image style={styles.image} source={{ uri: product.image }} />
+                <TouchableOpacity
+                  style={styles.minusIcon}
+                  onPress={() => toggleSelectProduct(null, product.type)}
+                >
+                  <Ionicons name="remove-circle" size={24} color="black" />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </ScrollView>
+        </Animated.View>
+      </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.button}
@@ -166,7 +190,7 @@ const TopsScreen = ({ toggleSelectProduct, selectedProduct }) => {
 
   const fetchTops = async () => {
     try {
-      const response = await axios.get("http://192.168.29.11:3000/tops");
+      const response = await axios.get("http://192.168.0.155:3000/tops");
       setTops(response.data);
       setLoading(false);
     } catch (error) {
@@ -189,9 +213,9 @@ const TopsScreen = ({ toggleSelectProduct, selectedProduct }) => {
       {tops.map((top, index) => (
         <View key={index} style={styles.productCard}>
           <Image style={styles.image} source={{ uri: top.image }} />
-          <Text style={styles.price}>{`₹${top.price}`}</Text>
           <Text style={styles.name}>{top.name}</Text>
           <Text style={styles.brand}>{top.brand}</Text>
+          <Text style={styles.price}>{`₹${top.price}`}</Text>
           <TouchableOpacity
             style={styles.plusIcon}
             onPress={() => toggleSelectProduct(top)}
@@ -203,7 +227,7 @@ const TopsScreen = ({ toggleSelectProduct, selectedProduct }) => {
                   : "add-circle"
               }
               size={24}
-              color="black"
+              color="#f7879a"
             />
           </TouchableOpacity>
         </View>
@@ -223,7 +247,7 @@ const BottomsScreen = ({ toggleSelectProduct, selectedProduct }) => {
 
   const fetchBottoms = async () => {
     try {
-      const response = await axios.get("http://192.168.29.11:3000/bottoms");
+      const response = await axios.get("http://192.168.0.155:3000/bottoms");
       setBottoms(response.data);
       setLoading(false);
     } catch (error) {
@@ -246,9 +270,9 @@ const BottomsScreen = ({ toggleSelectProduct, selectedProduct }) => {
       {bottoms.map((bottom, index) => (
         <View key={index} style={styles.productCard}>
           <Image style={styles.image} source={{ uri: bottom.image }} />
-          <Text style={styles.price}>{`₹${bottom.price}`}</Text>
           <Text style={styles.name}>{bottom.name}</Text>
           <Text style={styles.brand}>{bottom.brand}</Text>
+          <Text style={styles.price}>{`₹${bottom.price}`}</Text>
           <TouchableOpacity
             style={styles.plusIcon}
             onPress={() => toggleSelectProduct(bottom)}
@@ -260,7 +284,7 @@ const BottomsScreen = ({ toggleSelectProduct, selectedProduct }) => {
                   : "add-circle"
               }
               size={24}
-              color="black"
+              color="#f7879a"
             />
           </TouchableOpacity>
         </View>
@@ -280,7 +304,7 @@ const FootwearScreen = ({ toggleSelectProduct, selectedProduct }) => {
 
   const fetchFootwear = async () => {
     try {
-      const response = await axios.get("http://192.168.29.11:3000/footwear");
+      const response = await axios.get("http://192.168.0.155:3000/footwear");
       setFootwear(response.data);
       setLoading(false);
     } catch (error) {
@@ -303,9 +327,9 @@ const FootwearScreen = ({ toggleSelectProduct, selectedProduct }) => {
       {footwear.map((item, index) => (
         <View key={index} style={styles.productCard}>
           <Image style={styles.image} source={{ uri: item.image }} />
-          <Text style={styles.price}>{`₹${item.price}`}</Text>
           <Text style={styles.name}>{item.name}</Text>
           <Text style={styles.brand}>{item.brand}</Text>
+          <Text style={styles.price}>{`₹${item.price}`}</Text>
           <TouchableOpacity
             style={styles.plusIcon}
             onPress={() => toggleSelectProduct(item)}
@@ -317,7 +341,7 @@ const FootwearScreen = ({ toggleSelectProduct, selectedProduct }) => {
                   : "add-circle"
               }
               size={24}
-              color="black"
+              color="#f7879a"
             />
           </TouchableOpacity>
         </View>
@@ -337,7 +361,7 @@ const AccessoriesScreen = ({ toggleSelectProduct, selectedProduct }) => {
 
   const fetchAccessories = async () => {
     try {
-      const response = await axios.get("http://192.168.29.11:3000/accessories");
+      const response = await axios.get("http://192.168.0.155:3000/accessories");
       setAccessories(response.data);
       setLoading(false);
     } catch (error) {
@@ -360,9 +384,9 @@ const AccessoriesScreen = ({ toggleSelectProduct, selectedProduct }) => {
       {accessories.map((accessory, index) => (
         <View key={index} style={styles.productCard}>
           <Image style={styles.image} source={{ uri: accessory.image }} />
-          <Text style={styles.price}>{`₹${accessory.price}`}</Text>
           <Text style={styles.name}>{accessory.name}</Text>
           <Text style={styles.brand}>{accessory.brand}</Text>
+          <Text style={styles.price}>{`₹${accessory.price}`}</Text>
           <TouchableOpacity
             style={styles.plusIcon}
             onPress={() => toggleSelectProduct(accessory)}
@@ -374,7 +398,7 @@ const AccessoriesScreen = ({ toggleSelectProduct, selectedProduct }) => {
                   : "add-circle"
               }
               size={24}
-              color="black"
+              color="#f7879a"
             />
           </TouchableOpacity>
         </View>
@@ -400,7 +424,7 @@ const styles = StyleSheet.create({
   },
   activeButton: {
     borderBottomWidth: 2,
-    borderBottomColor: "black",
+    borderBottomColor: "#ff3e6c",
   },
   navText: {
     fontSize: 16,
@@ -414,33 +438,40 @@ const styles = StyleSheet.create({
   productCard: {
     width: "45%",
     backgroundColor: "#f8f8f8",
+    borderRadius: 10,
     padding: 10,
     marginVertical: 10,
-    borderRadius: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+    alignItems: "center",
   },
   image: {
     width: "100%",
-    height: 150,
-    borderRadius: 5,
+    height: 100,
+    resizeMode: "cover",
+    borderRadius: 10,
   },
   price: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 5,
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#ff3e6c",
   },
   name: {
     fontSize: 16,
-    marginTop: 5,
+    marginTop: 3,
+    fontWeight: "bold",
   },
   brand: {
-    fontSize: 14,
+    fontSize: 12,
     color: "gray",
-    marginTop: 5,
   },
   plusIcon: {
     position: "absolute",
-    top: 5,
-    right: 5,
+    top: 10,
+    right: 10,
   },
   selectedProductsContainer: {
     padding: 10,
@@ -449,15 +480,24 @@ const styles = StyleSheet.create({
     borderTopColor: "#cccccc",
   },
   selectedProductsText: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 15,
+    fontWeight: "black",
     marginBottom: 10,
   },
   selectedProductCard: {
     width: 100,
-    height: 100,
-    marginRight: 10,
-    position: "relative",
+    height: 120,
+    backgroundColor: "#FFF",
+    borderRadius: 10,
+    padding: 10,
+    margin: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
   minusIcon: {
     position: "absolute",
@@ -465,7 +505,7 @@ const styles = StyleSheet.create({
     right: 5,
   },
   button: {
-    backgroundColor: "black",
+    backgroundColor: "#ff3e6c",
     padding: 15,
     alignItems: "center",
   },
