@@ -3,20 +3,29 @@ import {
   StyleSheet,
   Text,
   View,
+  Modal,
+  FlatList,
   ScrollView,
   Image,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import { UserType } from "../UserContext";
 import axios from "axios";
-import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 
 const HomeScreen = () => {
   const { userId, setUserId } = useContext(UserType);
   const [posts, setPosts] = useState([]);
+  const [collections, setCollections] = useState([]);
+  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newCollectionModalVisible, setNewCollectionModalVisible] =
+    useState(false);
+  const [newCollectionName, setNewCollectionName] = useState("");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,31 +51,19 @@ const HomeScreen = () => {
     }, [])
   );
 
-  // const fetchPosts = async () => {
-  //   try {
-  //     const response = await axios.get("http://192.168.0.155:3000/posts");
-  //     setPosts(response.data);
-  //   } catch (error) {
-  //     console.error("Error fetching posts", error);
-  //   }
-  // };
-
   const fetchPosts = async () => {
     try {
-      const response = await axios.get("http://192.168.0.155:3000/posts");
+      const response = await axios.get("http://192.168.29.11:3000/posts");
       setPosts(response.data);
     } catch (error) {
-      console.error(
-        "Error fetching posts",
-        error.response || error.message || error
-      );
+      console.error("Error fetching posts", error);
     }
   };
 
   const handleLike = async (postId) => {
     try {
       const response = await axios.put(
-        `http://192.168.0.155:3000/posts/${postId}/${userId}/like`
+        `http://192.168.29.11:3000/posts/${postId}/${userId}/like`
       );
       const updatedPost = response.data;
 
@@ -83,7 +80,7 @@ const HomeScreen = () => {
   const handleDislike = async (postId) => {
     try {
       const response = await axios.put(
-        `http://192.168.0.155:3000/posts/${postId}/${userId}/unlike`
+        `http://192.168.29.11:3000/posts/${postId}/${userId}/unlike`
       );
       const updatedPost = response.data;
 
@@ -94,6 +91,57 @@ const HomeScreen = () => {
       setPosts(updatedPosts);
     } catch (error) {
       console.error("Error disliking the post", error);
+    }
+  };
+
+  const fetchCollections = async () => {
+    try {
+      const response = await axios.get(
+        `http://192.168.29.11:3000/collections/${userId}`
+      );
+      setCollections(response.data);
+    } catch (error) {
+      console.error("Error fetching collections:", error);
+    }
+  };
+
+  const handleBookmarkClick = async (postId) => {
+    setSelectedPostId(postId);
+    await fetchCollections();
+    setModalVisible(true);
+  };
+
+  const handleSaveToCollection = async (collectionName) => {
+    try {
+      await axios.post("http://192.168.29.11:3000/addPostToCollection", {
+        userId,
+        collectionName,
+        postId: selectedPostId,
+      });
+      setModalVisible(false);
+      alert("Post added to collection");
+    } catch (error) {
+      console.error("Error saving post to collection:", error);
+      alert("Failed to save post to collection");
+    }
+  };
+
+  const handleCreateNewCollection = async () => {
+    setNewCollectionModalVisible(true);
+  };
+
+  const handleNewCollectionSubmit = async () => {
+    try {
+      await axios.post("http://192.168.29.11:3000/createCollection", {
+        userId,
+        collectionName: newCollectionName, // Assuming newCollectionName is set elsewhere in your code
+      });
+      setNewCollectionModalVisible(false);
+      setModalVisible(false);
+      alert("New collection created and post added");
+    } catch (error) {
+      console.error("Error creating new collection:", error);
+      alert("Failed to create new collection and save post");
     }
   };
 
@@ -176,12 +224,11 @@ const HomeScreen = () => {
                     />
                   </TouchableOpacity>
 
-                  <FontAwesome
-                    name="bookmark-o"
-                    size={16}
-                    color="black"
-                    style={styles.icon}
-                  />
+                  <TouchableOpacity
+                    onPress={() => handleBookmarkClick(post._id)}
+                  >
+                    <Ionicons name="bookmark-outline" size={16} color="black" />
+                  </TouchableOpacity>
                   <Ionicons
                     name="paper-plane-outline"
                     size={16}
@@ -198,6 +245,79 @@ const HomeScreen = () => {
           </View>
         ))}
       </View>
+      {/* Modal for selecting existing collection or creating new collection */}
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Save to Collection</Text>
+            <FlatList
+              data={collections}
+              keyExtractor={(item) => item.name}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.collectionItem}
+                  onPress={() => handleSaveToCollection(item.name)}
+                >
+                  <Text style={styles.collectionName}>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+            />
+            <TouchableOpacity
+              style={styles.newCollectionButton}
+              onPress={handleCreateNewCollection}
+            >
+              <Text style={styles.newCollectionButtonText}>
+                Create New Collection
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal for creating new collection */}
+      <Modal
+        visible={newCollectionModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setNewCollectionModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Create New Collection</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter collection name"
+              onChangeText={(text) => setNewCollectionName(text)}
+              value={newCollectionName}
+            />
+            <TouchableOpacity
+              style={styles.createCollectionButton}
+              onPress={handleNewCollectionSubmit}
+            >
+              <Text style={styles.createCollectionButtonText}>
+                Create Collection
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setNewCollectionModalVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -312,6 +432,73 @@ const styles = StyleSheet.create({
     marginTop: 5,
     color: "gray",
     fontSize: 12,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Dark background
+  },
+  modalContent: {
+    padding: 20,
+    backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    height: "50%", // Make the modal cover half the screen height
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
+  collectionItem: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
+  collectionName: {
+    fontSize: 16,
+  },
+  newCollectionButton: {
+    padding: 15,
+    backgroundColor: "#D3D3D3",
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  newCollectionButtonText: {
+    color: "white",
+    fontSize: 16,
+  },
+  createCollectionButton: {
+    padding: 15,
+    backgroundColor: "#D3D3D3",
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  createCollectionButtonText: {
+    color: "white",
+    fontSize: 16,
+  },
+  input: {
+    height: 40,
+    borderColor: "#ddd",
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+    fontSize: 16,
+    borderRadius: 5,
+  },
+  closeButton: {
+    padding: 15,
+    backgroundColor: "#ff3e6c",
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  closeButtonText: {
+    color: "white",
+    fontSize: 16,
   },
 });
 

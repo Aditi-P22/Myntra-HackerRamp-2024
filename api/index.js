@@ -392,3 +392,78 @@ app.get("/posts/user/:userId", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+
+// Route to get collections of a user
+app.get("/collections/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    res.status(200).json(user.collections);
+  } catch (error) {
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// Route to create a new collection for a user
+app.post("/createCollection", async (req, res) => {
+  const { userId, collectionName } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // Check if the collection name already exists
+    const existingCollection = user.collections.find(
+      (coll) => coll.name === collectionName
+    );
+    if (existingCollection) {
+      return res.status(400).send("Collection name already exists");
+    }
+
+    // Create a new collection
+    user.collections.push({ name: collectionName, posts: [] });
+    await user.save();
+
+    res.status(200).send("Collection created successfully");
+  } catch (error) {
+    console.error("Error creating collection:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.post("/addPostToCollection", async (req, res) => {
+  const { userId, collectionName, postId } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    let collection = user.collections.find(
+      (coll) => coll.name === collectionName
+    );
+
+    if (!collection) {
+      // Create a new collection if it doesn't exist
+      user.collections.push({ name: collectionName, posts: [postId] });
+    } else {
+      // Add post to existing collection
+      collection.posts.push(postId);
+    }
+
+    await user.save();
+
+    res.status(200).send("Post added to collection");
+  } catch (error) {
+    console.error("Error adding post to collection:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});

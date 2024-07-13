@@ -20,9 +20,15 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
   verificationToken: String,
+  savedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+  collections: [
+    {
+      name: { type: String },
+      posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+    },
+  ],
 });
 
-
-const User = mongoose.model("User",userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;
