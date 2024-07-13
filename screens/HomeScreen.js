@@ -127,18 +127,6 @@ const HomeScreen = () => {
             </View>
 
             <View style={styles.postContent}>
-              {/* {post.images?.length > 0 && (
-                <View style={styles.imagesContainer}>
-                  {post.images.slice(0, 4).map((imageUrl, index) => (
-                    <Image
-                      key={index}
-                      source={{ uri: imageUrl }}
-                      style={styles.postImage}
-                    />
-                  ))}
-                </View>
-              )} */}
-
               {post.images?.length > 0 && (
                 <View style={styles.imagesContainer}>
                   <View style={styles.leftImages}>
@@ -314,7 +302,7 @@ const styles = StyleSheet.create({
   interactionBar: {
     flexDirection: "row",
     alignItems: "left",
-    marginTop: 3,
+    marginTop: 1,
   },
   icon: {
     marginRight: 0,
