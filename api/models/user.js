@@ -21,12 +21,7 @@ const userSchema = new mongoose.Schema({
   },
   verificationToken: String,
   savedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
-  collections: [
-    {
-      name: { type: String },
-      posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
-    },
-  ],
+  collections: [{ type: mongoose.Schema.Types.ObjectId, ref: "Collection" }],
 });
 
 const User = mongoose.model("User", userSchema);

@@ -44,6 +44,7 @@ const Top = require("./models/top"); // Import Top model
 const Bottom = require("./models/bottom");
 const Footwear = require("./models/footwear");
 const Accessory = require("./models/accessory");
+const Collection = require("./models/collections");
 
 const sendVerificationEmail = async (email, verificationToken) => {
   const transporter = nodemailer.createTransport({
@@ -393,77 +394,147 @@ app.get("/posts/user/:userId", async (req, res) => {
   }
 });
 
-// Route to get collections of a user
+// Route to get collections of a user with details of posts
 app.get("/collections/:userId", async (req, res) => {
   const { userId } = req.params;
 
   try {
+    // Find the user to ensure they exist
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).send("User not found");
     }
 
-    res.status(200).json(user.collections);
+    // Find collections belonging to the user and populate the posts
+    const collections = await Collection.find({ owner: userId }).populate({
+      path: "posts", // Field in the Collection schema that references Post
+      select: "outfitName description images tags", // Fields to select from the Post schema
+      options: { sort: { createdAt: -1 } }, // Optional: sort posts by creation date
+    });
+
+    if (!collections.length) {
+      return res.status(404).send("Collections not found for the user");
+    }
+
+    // Respond with the collections including populated post details
+    res.status(200).json(collections);
   } catch (error) {
+    console.error("Error fetching collections:", error);
     res.status(500).send("Internal Server Error");
   }
 });
 
 // Route to create a new collection for a user
 app.post("/createCollection", async (req, res) => {
-  const { userId, collectionName } = req.body;
+  const { userId, collectionName, postId } = req.body;
 
   try {
+    console.log("Received request to create collection:", req.body);
+
     const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).send("User not found");
+    console.log("User found:", user);
+
+    if (postId) {
+      console.log("Checking if post exists with ID:", postId);
+      const post = await Post.findById(postId);
+      console.log("Post found:", post);
     }
 
-    // Check if the collection name already exists
-    const existingCollection = user.collections.find(
-      (coll) => coll.name === collectionName
-    );
-    if (existingCollection) {
-      return res.status(400).send("Collection name already exists");
-    }
+    const existingCollection = await Collection.findOne({
+      name: collectionName,
+      owner: userId,
+    });
+    console.log("Existing collection:", existingCollection);
 
-    // Create a new collection
-    user.collections.push({ name: collectionName, posts: [] });
+    const newCollection = new Collection({
+      name: collectionName,
+      owner: userId,
+      posts: postId ? [postId] : [],
+    });
+
+    await newCollection.save();
+    console.log("New collection saved:", newCollection);
+
+    user.collections.push(newCollection._id);
     await user.save();
+    console.log("Collection added to user's collections");
 
-    res.status(200).send("Collection created successfully");
+    res.status(201).send("Collection created successfully");
   } catch (error) {
     console.error("Error creating collection:", error);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send(`Internal Server Error: ${error.message}`);
   }
 });
 
 app.post("/addPostToCollection", async (req, res) => {
   const { userId, collectionName, postId } = req.body;
 
+  // Check if postId is provided
+  if (!postId) {
+    return res.status(400).send("postId is required");
+  }
+
   try {
+    // Find the user
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).send("User not found");
     }
 
-    let collection = user.collections.find(
-      (coll) => coll.name === collectionName
-    );
+    // Find the post
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).send("Post not found");
+    }
+
+    // Find the collection
+    let collection = await Collection.findOne({
+      name: collectionName,
+      owner: userId,
+    });
 
     if (!collection) {
       // Create a new collection if it doesn't exist
-      user.collections.push({ name: collectionName, posts: [postId] });
+      collection = new Collection({
+        name: collectionName,
+        owner: userId,
+        posts: [postId], // Initialize with the postId
+      });
     } else {
       // Add post to existing collection
-      collection.posts.push(postId);
+      if (!collection.posts.includes(postId)) {
+        collection.posts.push(postId);
+      }
     }
 
-    await user.save();
+    await collection.save();
 
     res.status(200).send("Post added to collection");
   } catch (error) {
     console.error("Error adding post to collection:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// Route to get details of a specific collection, including posts
+app.get("/collection/:collectionId", async (req, res) => {
+  const { collectionId } = req.params;
+
+  try {
+    // Find the collection by ID and populate the posts
+    const collection = await Collection.findById(collectionId).populate({
+      path: "posts",
+      select: "outfitName description images tags createdAt",
+      options: { sort: { createdAt: -1 } }, // Optional: sort posts by creation date
+    });
+
+    if (!collection) {
+      return res.status(404).send("Collection not found");
+    }
+
+    res.status(200).json(collection);
+  } catch (error) {
+    console.error("Error fetching collection details:", error);
     res.status(500).send("Internal Server Error");
   }
 });

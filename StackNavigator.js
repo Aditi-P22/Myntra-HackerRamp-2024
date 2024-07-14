@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import ActivityScreen from "./screens/ActivityScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ClothingScreen from "./screens/ClothingScreen";
+import CollectionDetailsScreen from "./screens/CollectionDetailsScreen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -108,6 +109,10 @@ const StackNavigator = () => {
           name="ThreadsScreen"
           component={ThreadsScreen}
           options={{ headerShown: true, title: "Name Your Curation" }}
+        />
+        <Stack.Screen
+          name="CollectionDetails"
+          component={CollectionDetailsScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

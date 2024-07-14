@@ -20,12 +20,17 @@ const ProfileScreen = () => {
   const [showCreated, setShowCreated] = useState(true); // Toggle between created and saved posts
   const navigation = useNavigation();
   const { userId, setUserId } = useContext(UserType);
+  const [collections, setCollections] = useState([]);
+
+  const navigateToCollectionDetails = (collectionId) => {
+    navigation.navigate("CollectionDetails", { collectionId });
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.0.155:3000/profile/${userId}`
+          `http://192.168.29.11:3000/profile/${userId}`
         );
         const { user } = response.data;
         setUser(user);
@@ -39,6 +44,7 @@ const ProfileScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
+      fetchCollections();
       fetchPosts();
     }, [userId])
   );
@@ -46,7 +52,7 @@ const ProfileScreen = () => {
   const fetchPosts = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.0.155:3000/posts/user/${userId}`
+        `http://192.168.29.11:3000/posts/user/${userId}`
       );
 
       console.log("Response from fetchPosts:", response.data);
@@ -66,7 +72,7 @@ const ProfileScreen = () => {
   const handleLike = async (postId) => {
     try {
       const response = await axios.put(
-        `http://192.168.0.155:3000/posts/${postId}/${userId}/like`
+        `http://192.168.29.11:3000/posts/${postId}/${userId}/like`
       );
       const updatedPost = response.data;
 
@@ -83,7 +89,7 @@ const ProfileScreen = () => {
   const handleDislike = async (postId) => {
     try {
       const response = await axios.put(
-        `http://192.168.0.155:3000/posts/${postId}/${userId}/unlike`
+        `http://192.168.29.11:3000/posts/${postId}/${userId}/unlike`
       );
       const updatedPost = response.data;
 
@@ -101,6 +107,32 @@ const ProfileScreen = () => {
     await AsyncStorage.removeItem("authToken");
     console.log("Cleared auth token");
     navigation.replace("Login");
+  };
+
+  const fetchCollections = async () => {
+    try {
+      const response = await axios.get(
+        `http://192.168.29.11:3000/collections/${userId}`
+      );
+
+      setCollections(response.data);
+    } catch (error) {
+      console.error("Error fetching collections:", error);
+    }
+  };
+
+  const fetchPostsInCollection = async (collectionId) => {
+    try {
+      const response = await axios.get(
+        `http://192.168.29.11:3000/collections/${collectionId}/posts`
+      );
+
+      // Handle response data, assuming posts are returned in response.data
+      console.log("Posts in collection:", response.data);
+      // Update state or perform other operations with fetched posts
+    } catch (error) {
+      console.error("Error fetching posts in collection:", error);
+    }
   };
 
   return (
@@ -312,8 +344,51 @@ const ProfileScreen = () => {
           )}
         </View>
       ) : (
-        <View style={styles.postsContainer}>
-          {/* Render saved posts here */}
+        <View style={styles.collectionsContainer}>
+          {collections.length > 0 ? (
+            collections.map((collection, index) => (
+              <View key={index} style={styles.collectionWrapper}>
+                <TouchableOpacity
+                  key={collection._id}
+                  style={styles.collectionCard}
+                  onPress={() =>
+                    navigation.navigate("CollectionDetails", {
+                      userId: user._id,
+                      collectionId: collection._id,
+                    })
+                  }
+                >
+                  <View style={styles.collectionImageContainer}>
+                    {collection.posts.length > 0 &&
+                    collection.posts[0].images ? (
+                      collection.posts[0].images.length > 0 ? (
+                        <View style={styles.collectionGrid}>
+                          {collection.posts[0].images
+                            .slice(0, 4)
+                            .map((imageUrl, index) => (
+                              <Image
+                                key={index}
+                                source={{ uri: imageUrl }}
+                                style={styles.collectionImage}
+                              />
+                            ))}
+                        </View>
+                      ) : (
+                        <Text>No images available</Text>
+                      )
+                    ) : (
+                      <Text>No posts or images available</Text>
+                    )}
+                  </View>
+                </TouchableOpacity>
+                <Text style={styles.collectionName}>{collection.name}</Text>
+              </View>
+            ))
+          ) : (
+            <Text style={styles.noCollectionsText}>
+              No collections available.
+            </Text>
+          )}
         </View>
       )}
     </ScrollView>
@@ -444,6 +519,55 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     marginTop: 2,
+  },
+  collectionsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    paddingHorizontal: 15,
+    marginTop: 20,
+  },
+  collectionWrapper: {
+    width: "48%",
+    alignItems: "center", // Center the text and card within the wrapper
+    marginBottom: 20,
+  },
+  collectionCard: {
+    width: "100%",
+    aspectRatio: 1, // Ensures the card maintains a square aspect ratio
+    backgroundColor: "#f0f0f0",
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  collectionImageContainer: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  collectionGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    width: "100%",
+    height: "100%",
+  },
+  collectionImage: {
+    width: "50%", // Each image takes up half the width
+    height: "50%", // Each image takes up half the height
+    resizeMode: "cover",
+  },
+  collectionName: {
+    marginTop: 8,
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
+  },
+  noCollectionsText: {
+    alignSelf: "center",
+    marginTop: 20,
+    fontSize: 16,
+    color: "gray",
   },
 });
 

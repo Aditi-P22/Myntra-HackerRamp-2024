@@ -106,6 +106,7 @@ const HomeScreen = () => {
   };
 
   const handleBookmarkClick = async (postId) => {
+    console.log("Bookmarking post with ID:", postId); // Debugging
     setSelectedPostId(postId);
     await fetchCollections();
     setModalVisible(true);
@@ -131,10 +132,23 @@ const HomeScreen = () => {
   };
 
   const handleNewCollectionSubmit = async () => {
+    if (!newCollectionName.trim() || !selectedPostId) {
+      alert("Collection name and post ID are required");
+      console.log("Collection name or post ID is missing"); // Debugging
+      return;
+    }
+
     try {
+      console.log(
+        "Creating new collection with name:",
+        newCollectionName,
+        "and post ID:",
+        selectedPostId
+      ); // Debugging
       await axios.post("http://192.168.29.11:3000/createCollection", {
         userId,
-        collectionName: newCollectionName, // Assuming newCollectionName is set elsewhere in your code
+        collectionName: newCollectionName,
+        postId: selectedPostId, // Ensure this is sent
       });
       setNewCollectionModalVisible(false);
       setModalVisible(false);
