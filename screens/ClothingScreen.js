@@ -15,7 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import Header from "../components/Header"; // Adjust the path as necessary
 
 const ChevronUpIcon = () => (
-  <Ionicons name="chevron-up" size={24} color="black" />
+  <Ionicons name="chevron-up" size={24} color="#ff3e6c" />
 );
 
 const ClothingScreen = () => {
@@ -491,7 +491,7 @@ const styles = StyleSheet.create({
   },
   selectedProductCard: {
     width: 100,
-    height: 120,
+    height: 170,
     backgroundColor: "#FFF",
     borderRadius: 10,
     padding: 10,

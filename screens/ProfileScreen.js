@@ -251,10 +251,10 @@ const ProfileScreen = () => {
             posts.map((post) => (
               <View key={post._id} style={styles.postCard}>
                 <View style={styles.userInfo}>
-                  <Image
+                  {/* <Image
                     style={styles.avatar}
                     source={require("../assets/usergirl.png")}
-                  />
+                  /> */}
                   <View style={styles.userDetails}>
                     <Text style={styles.username}>{post.user.name}</Text>
                     {/* <Text style={styles.outfitName}>{post.outfitName}</Text> */}
@@ -445,6 +445,7 @@ const styles = StyleSheet.create({
     width: "35%", // Reduce width to make it smaller
     marginRight: 20,
     flexDirection: "row",
+    marginTop: 15,
   },
   leftImages: {
     flex: 1,
@@ -477,7 +478,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#555",
     fontWeight: "bold",
-    marginTop: -7,
+    marginTop: 0,
   },
   description: {
     fontSize: 12,
