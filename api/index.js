@@ -522,11 +522,13 @@ app.get("/collection/:collectionId", async (req, res) => {
 
   try {
     // Find the collection by ID and populate the posts
-    const collection = await Collection.findById(collectionId).populate({
-      path: "posts",
-      select: "outfitName description images tags createdAt",
-      options: { sort: { createdAt: -1 } }, // Optional: sort posts by creation date
-    });
+    const collection = await Collection.findById(collectionId)
+      .select("name isPublic") // Add 'isPublic' to the selected fields
+      .populate({
+        path: "posts",
+        select: "outfitName description images tags createdAt",
+        options: { sort: { createdAt: -1 } }, // Optional: sort posts by creation date
+      });
 
     if (!collection) {
       return res.status(404).send("Collection not found");
@@ -535,6 +537,28 @@ app.get("/collection/:collectionId", async (req, res) => {
     res.status(200).json(collection);
   } catch (error) {
     console.error("Error fetching collection details:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+///
+app.patch("/collection/:collectionId/toggle-public", async (req, res) => {
+  const { collectionId } = req.params;
+  const { isPublic } = req.body;
+
+  try {
+    const collection = await Collection.findById(collectionId);
+
+    if (!collection) {
+      return res.status(404).send("Collection not found");
+    }
+
+    collection.isPublic = isPublic;
+    await collection.save();
+
+    res.status(200).json(collection);
+  } catch (error) {
+    console.error("Error updating collection:", error);
     res.status(500).send("Internal Server Error");
   }
 });

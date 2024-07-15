@@ -1,5 +1,3 @@
-// ./models/collection.js
-
 const mongoose = require("mongoose");
 
 const collectionSchema = new mongoose.Schema({
@@ -14,6 +12,10 @@ const collectionSchema = new mongoose.Schema({
       ref: "Post", // Reference to the Post model
     },
   ],
+  isPublic: {
+    type: Boolean,
+    default: true, // Default to public
+  },
 });
 
 const Collection = mongoose.model("Collection", collectionSchema);
