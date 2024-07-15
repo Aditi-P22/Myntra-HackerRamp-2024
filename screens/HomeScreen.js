@@ -716,7 +716,7 @@ const HomeScreen = ({ route }) => {
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get("http://192.168.0.155:3000/posts");
+      const response = await axios.get("http://192.168.29.11:3000/posts");
       setPosts(response.data);
     } catch (error) {
       console.error("Error fetching posts", error);
@@ -726,7 +726,7 @@ const HomeScreen = ({ route }) => {
   const handleLike = async (postId) => {
     try {
       const response = await axios.put(
-        `http://192.168.0.155:3000/posts/${postId}/${userId}/like`
+        `http://192.168.29.11:3000/posts/${postId}/${userId}/like`
       );
       const updatedPost = response.data;
 
@@ -743,7 +743,7 @@ const HomeScreen = ({ route }) => {
   const handleDislike = async (postId) => {
     try {
       const response = await axios.put(
-        `http://192.168.0.155:3000/posts/${postId}/${userId}/unlike`
+        `http://192.168.29.11:3000/posts/${postId}/${userId}/unlike`
       );
       const updatedPost = response.data;
 
@@ -760,7 +760,7 @@ const HomeScreen = ({ route }) => {
   const fetchCollections = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.0.155:3000/collections/${userId}`
+        `http://192.168.29.11:3000/collections/${userId}`
       );
       setCollections(response.data);
     } catch (error) {
@@ -777,7 +777,7 @@ const HomeScreen = ({ route }) => {
 
   const handleSaveToCollection = async (collectionName) => {
     try {
-      await axios.post("http://192.168.0.155:3000/addPostToCollection", {
+      await axios.post("http://192.168.29.11:3000/addPostToCollection", {
         userId,
         collectionName,
         postId: selectedPostId,
@@ -796,7 +796,7 @@ const HomeScreen = ({ route }) => {
 
   const handleNewCollectionSubmit = async () => {
     try {
-      await axios.post("http://192.168.0.155:3000/createCollection", {
+      await axios.post("http://192.168.29.11:3000/createCollection", {
         userId,
         collectionName: newCollectionName,
         postId: selectedPostId, // Ensure this is sent
@@ -849,7 +849,9 @@ const HomeScreen = ({ route }) => {
               <View style={styles.userDetails}>
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate("Profile", { userId: post.user._id })
+                    navigation.navigate("OtherUserProfileScreen", {
+                      userId: post.user._id,
+                    })
                   }
                 >
                   <Text style={styles.username}>{post.user.name}</Text>

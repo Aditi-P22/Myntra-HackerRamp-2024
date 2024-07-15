@@ -562,3 +562,44 @@ app.patch("/collection/:collectionId/toggle-public", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
+// Updated endpoint to handle query parameters correctly
+app.get("/collections", async (req, res) => {
+  const { userId, isPublic } = req.query;
+
+  try {
+    // Validate userId
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).send("Invalid or missing User ID");
+    }
+
+    // Check if `isPublic` is a boolean or convert it
+    const isPublicBool = isPublic === "true";
+
+    // Find the user to ensure they exist
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // Find collections belonging to the user and that are public
+    const collections = await Collection.find({
+      owner: userId,
+      isPublic: isPublicBool, // Filter collections based on `isPublic`
+    }).populate({
+      path: "posts",
+      select: "outfitName description images tags",
+      options: { sort: { createdAt: -1 } },
+    });
+
+    if (!collections.length) {
+      return res.status(404).send("No collections found for the user");
+    }
+
+    // Respond with the collections including populated post details
+    res.status(200).json(collections);
+  } catch (error) {
+    console.error("Error fetching collections:", error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});

@@ -14,6 +14,7 @@ import ActivityScreen from "./screens/ActivityScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ClothingScreen from "./screens/ClothingScreen";
 import CollectionDetailsScreen from "./screens/CollectionDetailsScreen";
+import OtherUserProfileScreen from "./screens/OtherUserProfileScreen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -113,6 +114,10 @@ const StackNavigator = () => {
         <Stack.Screen
           name="CollectionDetails"
           component={CollectionDetailsScreen}
+        />
+        <Stack.Screen
+          name="OtherUserProfileScreen"
+          component={OtherUserProfileScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
