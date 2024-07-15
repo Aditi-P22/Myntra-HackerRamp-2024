@@ -12,6 +12,7 @@ import {
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import Header from "../components/Header"; // Adjust the path as necessary
 
 const ChevronUpIcon = () => (
   <Ionicons name="chevron-up" size={24} color="black" />
@@ -67,6 +68,7 @@ const ClothingScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Header />
       <View style={styles.navContainer}>
         <TouchableOpacity
           style={[styles.navButton, category === "tops" && styles.activeButton]}
@@ -411,7 +413,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    paddingTop: 20,
+    paddingTop: 80,
   },
   navContainer: {
     flexDirection: "row",
@@ -446,11 +448,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-    alignItems: "center",
+    alignItems: "left",
   },
   image: {
     width: "100%",
-    height: 100,
+    height: 160,
     resizeMode: "cover",
     borderRadius: 10,
   },
@@ -458,15 +460,18 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
     color: "#ff3e6c",
+    marginLeft: 4,
   },
   name: {
-    fontSize: 16,
+    fontSize: 14,
     marginTop: 3,
     fontWeight: "bold",
+    marginLeft: 4,
   },
   brand: {
     fontSize: 12,
     color: "gray",
+    marginLeft: 4,
   },
   plusIcon: {
     position: "absolute",

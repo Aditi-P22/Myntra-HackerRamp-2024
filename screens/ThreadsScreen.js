@@ -49,13 +49,11 @@ const ThreadsScreen = ({ route }) => {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.header}>
-          <Image
-            style={styles.avatar}
-            source={{
-              uri: "https://cdn-icons-png.flaticon.com/128/149/149071.png",
-            }}
-          />
-          <Text style={styles.username}>Sujan_Music</Text>
+          <Text style={styles.username}>
+            Define{" "}
+            <Text style={[styles.username, { color: "#ff3e6c" }]}>Your</Text>{" "}
+            Collection's Essence
+          </Text>
         </View>
 
         <View style={styles.productContainer}>
@@ -129,9 +127,10 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   username: {
-    marginLeft: 10,
-    fontSize: 16,
+    marginLeft: 1,
+    fontSize: 18,
     fontWeight: "bold",
+    marginBottom: -8,
   },
   scrollViewContent: {
     flexGrow: 1,
@@ -162,15 +161,18 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
     color: "#ff3e6c",
+    marginLeft: 4,
   },
   name: {
-    fontSize: 16,
+    fontSize: 14,
     marginTop: 3,
     fontWeight: "bold",
+    marginLeft: 4,
   },
   brand: {
     fontSize: 12,
     color: "gray",
+    marginLeft: 4,
   },
   textInput: {
     borderColor: "gray",

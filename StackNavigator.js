@@ -14,6 +14,7 @@ import ActivityScreen from "./screens/ActivityScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ClothingScreen from "./screens/ClothingScreen";
 import CollectionDetailsScreen from "./screens/CollectionDetailsScreen";
+import Header from "./components/Header";
 import OtherUserProfileScreen from "./screens/OtherUserProfileScreen";
 
 const StackNavigator = () => {
@@ -90,7 +91,11 @@ const StackNavigator = () => {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          header: (props) => <Header {...props} />, // Set the Header component as the header
+        }}
+      >
         <Stack.Screen
           name="Login"
           component={LoginScreen}
