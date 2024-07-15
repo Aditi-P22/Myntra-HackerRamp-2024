@@ -3,7 +3,7 @@
 https://github.com/user-attachments/assets/31169a4f-025d-482e-bb6a-8063f12d3954
 
 
-### Team Name: Hum आपके Trensetters hai
+### Team Name: Hum आपके Trendsetters hai
 ### Team Members: <br> [ Aditi Patil](https://github.com/Aditi-P22) <br> [Bhumica Gangurde](https://github.com/BhumicaPG)
                
 
