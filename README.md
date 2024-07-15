@@ -32,5 +32,18 @@ An 'Outfit Inspiration' feature for Myntra, enabling users to create, categorize
 ![7](https://github.com/user-attachments/assets/2e070772-94d5-412e-9845-dc16df48b858)
 
 
+# Run the app
+```
+    npm install  //in root directory
+    cd api 
+    npm install 
+```
+* Install necessary dependencies
+* Change the IP Address to your system's IP Address
 
+```
+    npm start   //in root directory
+    cd api
+    npm start
+```
 
