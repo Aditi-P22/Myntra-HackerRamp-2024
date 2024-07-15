@@ -1,7 +1,13 @@
 # Myntra-HackerRamp-2024
-# Demo Video
+# Demo Video App
 https://github.com/user-attachments/assets/31169a4f-025d-482e-bb6a-8063f12d3954
 
+
+### Team Name: Hum आपके Trensetters hai
+### Team Members: <br> [ Aditi Patil](https://github.com/Aditi-P22) <br> [Bhumica Gangurde](https://github.com/BhumicaPG)
+               
+
+##
 An 'Outfit Inspiration' feature for Myntra, enabling users to create, categorize, and share outfit collections. It includes community engagement tools like favorites, following, and shopping links, supported by a rewarding system of coins and badges.
 
 **Frontend Tech Stacks**
@@ -46,4 +52,5 @@ An 'Outfit Inspiration' feature for Myntra, enabling users to create, categorize
     cd api
     npm start
 ```
+
 
