@@ -47,6 +47,15 @@ const postSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  //added
+  products: [
+    {
+      url: { type: String, required: true }, // URL to the product image
+      name: { type: String, required: true }, // Product name
+      price: { type: Number, required: true }, // Product price
+      brand: { type: String, required: true }, // Product brand
+    },
+  ],
 });
 
 const Post = mongoose.model("Post", postSchema);
