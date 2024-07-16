@@ -1,7 +1,7 @@
 # Myntra-HackerRamp-2024
 # Demo Video App
 
-https://github.com/user-attachments/assets/f6151181-886f-4452-9d8b-a426fa683592
+https://github.com/user-attachments/assets/4a3776f2-1f8d-471f-81a5-c76143f7a036
 
 ### Team Name: Hum आपके Trendsetters hai
 ### Team Members: <br> [ Aditi Patil](https://github.com/Aditi-P22) <br> [Bhumica Gangurde](https://github.com/BhumicaPG)
