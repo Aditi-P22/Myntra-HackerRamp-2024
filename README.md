@@ -1,6 +1,6 @@
 # Myntra-HackerRamp-2024
 # Demo Video App
-https://github.com/user-attachments/assets/31169a4f-025d-482e-bb6a-8063f12d3954
+(https://github.com/user-attachments/assets/77e495cd-2367-4cee-a23d-9f06c15aa349)
 
 
 ### Team Name: Hum आपके Trendsetters hai
